@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Canvas Demo</title>
+</head>
+
+<body>
+    
+    <!-- <img id="rock" src="spacerock.jpg" width="15" height="15"> -->
+    <canvas id="c1" width="800" height="800" ></canvas>
+    <script src="canv.js"></script>
+    <!-- <script>document.querySelector("#startScreen").addEventListener("click", draw)  </script> -->
+    <script>
+
+        
+        var c = document.getElementById("c1");
+        var ctx = c.getContext("2d");
+        var player = {
+            x: 0,
+            y: 750,
+            radius: 30,
+            lives: 3,
+            score: 0
+        };
+         
+        let harm = {
+            x: 100,
+            y: 50,
+            speed: 1,
+        };
+        
+        let benefit = {
+            x: 700,
+            y: 50,
+            speed: 1,
+            radius: 30,
+        };
+        
+        
+        
+        
+//         let dx = player["x"] - benefit["x"];
+//         let dy = player["y"] - benefit["y"];
+//         let distance = Math.sqrt(dx*dy+dy*dy);
+        
+            const is_colliding = (a,b) => {
+                result = false; 
+                let dx = a.x - b.x;
+                let dy = a.y - b.y;
+                let radii = a.radius + b.radius;            
+                if (Math.sqrt(dx*dy+dy*dy)<= radii) {
+                    result = true;
+                console.log("h");
+            } 
+                return result; 
+        }
+        
+            const moveLeft = (event) => {
+                player["x"] -=5 ;
+                
+            }
+            
+            const moveRight = (event) => {
+                player["x"] +=5;
+            }
+            
+            
+            const startScreen = (event) =>{
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, c.width, c.height);
+                ctx.font = "25px Arial";
+                ctx.fillStyle = "pink";
+                ctx.fillText("Use the left and right arrow keys to dodge the objects", 100, 400) 
+                ctx.fillText("press spacebar to continue", 250, 500);
+            }
+            
+            const gaveOverScreen = (event) =>{
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, c.width, c.height);
+                ctx.font = "60px Arial";
+                ctx.fillStyle = "blue";
+                ctx.fillText("GAME", 300, 400) 
+                ctx.fillText("OVER", 300, 500);
+            }
+        
+        const draw_objects = () => {
+            ctx.beginPath();
+            let bg = new Image();
+            bg.src = "background.jpg"
+            ctx.drawImage(bg, 0, 0, c.width, c.height);
+            ctx.closePath();
+            
+            ctx.beginPath();
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, 50, 25);
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "pink";
+            ctx.fillText("Lives: " + player["lives"], 5, 25)
+            ctx.closePath();
+            
+            ctx.beginPath();
+            ctx.fillStyle = "black";
+            ctx.fillRect(25, 50, 50, 25);
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "pink";
+            ctx.fillText("Score: " + player["score"], 5, 50)
+            ctx.closePath();
+            
+            ctx.beginPath();
+            let img = new Image();
+            img.src = "https://img.icons8.com/cotton/2x/dog--v1.png"
+            ctx.drawImage(img, harm["x"], harm["y"], img.naturalWidth*.25, img.naturalHeight*.25)
+            ctx.beginPath();
+            ctx.arc(benefit["x"], benefit["y"], 50, 0, Math.PI * 2);
+            ctx.fillStyle = "green";
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(player["x"], player["y"], 50, 0, Math.PI * 2);
+            ctx.fillStyle = "blue";
+            ctx.closePath();
+            ctx.fill();
+               
+        }
+        
+        
+        
+        
+        const draw = () => {
+            //clear
+            ctx.clearRect(0, 0, c.width, c.height);
+      
+            harm["y"] += 1 * harm["speed"];
+            benefit["y"] += 1 * benefit["speed"];
+                    
+
+
+            //player["x"] += 1;
+//             if (player["score"] < 10){
+//             harm["speed"] += 1;
+//             benefit["speed"] += 1;
+//             }
+            draw_objects();
+            ctx.fill();
+
+            
+            if (player["x"]>c.width + player["radius"]){
+                player["x"] = -player["radius"];
+            }
+            
+            
+            if (benefit["y"]>c.height + benefit["radius"]){
+                benefit["y"] = -benefit["radius"];
+            }
+
+            if (harm["y"]>c.height){
+                harm["y"] = 0;
+            }
+               
+            if (is_colliding(player, benefit)){
+                player["score"] += 10;
+                benefit["y"] = 0;
+            }
+            
+            if (is_colliding(player, harm)){
+                player["lives"] -= 1;
+                harm["y"] = 0;
+            }
+            
+            if (player["score"] == 20) {
+                harm["speed"] += 0.1;
+                benefit["speed"] += 0.1;
+            }
+            
+            
+            
+           if(player["lives"]>0){
+               window.requestAnimationFrame(draw);
+           }
+            else{
+                window.cancelAnimationFrame(draw);
+                gaveOverScreen();
+            }
+            
+            console.log(harm);
+            console.log(benefit);
+            console.log(player["score"]);
+            //repeat
+            //window.requestAnimationFrame(draw);
+            
+        }
+        
+//         window.addEventListener("keydown", moveLeft);
+//         window.addEventListener("keydown", moveRight);
+//         
+         window.addEventListener("keydown", (event) => {
+             let keyC = event.keyCode;
+             if (keyC == 37){
+                 moveLeft();
+             }
+             else if (keyC == 39){
+                 moveRight();
+             }
+             else if (keyC == 32){
+                draw(); 
+             }
+         });
+       
+//         event_listener for starting screen
+        startScreen();
+        //draw();
+    </script>
+
+</body>
+
+</html>
