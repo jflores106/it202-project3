@@ -22,7 +22,7 @@
         let harm = {
             x: 100,
             y: 50,
-            width: 50,
+            width: 100,
             height: 70,
             speed: 1,
         };
@@ -68,6 +68,7 @@
             bg.src = "background.jpg"
             ctx.drawImage(bg, 0, 0, c.width, c.height);
             ctx.closePath();
+            
             ctx.beginPath();
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, 80, 30);
@@ -75,22 +76,28 @@
             ctx.fillStyle = "#74b2ce";
             ctx.fillText("Lives: " + player["lives"], 5, 25)
             ctx.closePath();
+            
             ctx.beginPath();
             ctx.fillStyle = "black";
-            ctx.fillRect(0, 30, 80, 30);
+            ctx.fillRect(0, 30, 120, 30);
             ctx.font = "20px Arial";
             ctx.fillStyle = "#74b2ce";
             ctx.fillText("Score: " + player["score"], 5, 50)
             ctx.closePath();
+            
             ctx.beginPath();
             let img = new Image();
             img.src = "rock2.jpg";
             ctx.drawImage(img, harm["x"], harm["y"], img.naturalWidth * .25, img.naturalHeight * .25);
+            console.log(img.naturalWidth)
+            ctx.closePath();
+            
             ctx.beginPath();
             let b = new Image();
             b.src = "O2.jpg";
             ctx.drawImage(b, benefit["x"], benefit["y"], b.naturalWidth * .25, b.naturalHeight * 0.25);
             ctx.closePath();
+            
             ctx.beginPath();
             let plyr = new Image();
             plyr.src = "astronaut2.png";
@@ -100,15 +107,28 @@
         const draw = () => {
             //clear
             ctx.clearRect(0, 0, c.width, c.height);
+            
+            //update values
             harm["y"] += 1;
             benefit["y"] += 1;
             draw_objects();
+            
             if(benefit["y"] > c.height) {
                 benefit["y"] = 0;
             }
-            if(harm["y"] > c.height) {
+            
+            if(benefit["y"] == 0) {
+                benefit["x"] = Math.floor(Math.random()*(c.width-benefit["width"]));
+            }
+            
+            if(harm["y"] > c.height) {                
                 harm["y"] = 0;
             }
+            
+            if(harm["y"] == 0) {
+                harm["x"] = Math.floor(Math.random()*(c.width-harm["width"]));
+            }
+               
             if(player["x"] + player["width"] > c.width) {
                 player["x"] = c.width - player["width"];
             }
@@ -123,7 +143,7 @@
                 player["lives"] -= 1;
                 harm["y"] = 0;
             }
-            if(player["score"] >= 50) {
+            if(player["score"] >= 20) {
                 harm["y"] += harm["speed"];
                 benefit["y"] += benefit["speed"];
             }
