@@ -132,17 +132,21 @@
             if(player["x"] + player["width"] > c.width) {
                 player["x"] = c.width - player["width"];
             }
+            
             if(player["x"] < 0) {
                 player["x"] = 0;
             }
+            
             if(is_colliding(player, benefit)) {
                 player["score"] += 10;
                 benefit["y"] = 0;
             }
+            
             if(is_colliding(player, harm)) {
                 player["lives"] -= 1;
                 harm["y"] = 0;
             }
+            
             if(player["score"] >= 20) {
                 harm["y"] += harm["speed"];
                 benefit["y"] += benefit["speed"];
